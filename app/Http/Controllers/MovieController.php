@@ -298,13 +298,17 @@ class MovieController extends Controller
         $page = $request->get('page', 1);
         $cacheKey = 'top_rated_movies_page_' . $page;
         
-        $response = Cache::remember($cacheKey, 3600, function () use ($page) {
+        $data = Cache::remember($cacheKey, 3600, function () use ($page) {
             try {
-                return Http::timeout(10)->get($this->baseUrl . '/movie/top_rated', [
+                $response = Http::timeout(10)->get($this->baseUrl . '/movie/top_rated', [
                     'api_key' => $this->apiKey,
                     'language' => 'es-ES',
                     'page' => $page
                 ]);
+                if ($response->successful()) {
+                    return $response->json();
+                }
+                return null;
             } catch (\Exception $e) {
                 Log::error('Error en petición top rated movies', [
                     'page' => $page,
@@ -314,13 +318,11 @@ class MovieController extends Controller
             }
         });
 
-        if ($response && $response->successful()) {
-            $data = $response->json();
-            $movies = $data['results'];
-            $totalPages = $data['total_pages'];
-            $currentPage = $data['page'];
-            $totalResults = $data['total_results'];
-            
+        if ($data) {
+            $movies = $data['results'] ?? [];
+            $totalPages = $data['total_pages'] ?? 0;
+            $currentPage = $data['page'] ?? 1;
+            $totalResults = $data['total_results'] ?? 0;
             $paginator = new ApiPaginator($currentPage, $totalPages, $totalResults);
         } else {
             $movies = [];
@@ -375,13 +377,17 @@ class MovieController extends Controller
         $page = $request->get('page', 1);
         $cacheKey = 'upcoming_movies_page_' . $page;
         
-        $response = Cache::remember($cacheKey, 3600, function () use ($page) {
+        $data = Cache::remember($cacheKey, 3600, function () use ($page) {
             try {
-                return Http::timeout(10)->get($this->baseUrl . '/movie/upcoming', [
+                $response = Http::timeout(10)->get($this->baseUrl . '/movie/upcoming', [
                     'api_key' => $this->apiKey,
                     'language' => 'es-ES',
                     'page' => $page
                 ]);
+                if ($response->successful()) {
+                    return $response->json();
+                }
+                return null;
             } catch (\Exception $e) {
                 Log::error('Error en petición upcoming movies', [
                     'page' => $page,
@@ -391,13 +397,11 @@ class MovieController extends Controller
             }
         });
 
-        if ($response && $response->successful()) {
-            $data = $response->json();
-            $movies = $data['results'];
-            $totalPages = $data['total_pages'];
-            $currentPage = $data['page'];
-            $totalResults = $data['total_results'];
-            
+        if ($data) {
+            $movies = $data['results'] ?? [];
+            $totalPages = $data['total_pages'] ?? 0;
+            $currentPage = $data['page'] ?? 1;
+            $totalResults = $data['total_results'] ?? 0;
             $paginator = new ApiPaginator($currentPage, $totalPages, $totalResults);
         } else {
             $movies = [];
