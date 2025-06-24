@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Pelis cachondas')</title>
+    <title>@yield('title', 'PelisMod')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -92,7 +92,7 @@
                 <div class="flex items-center">
                     <a href="{{ route('movies.index') }}" class="flex-shrink-0 flex items-center">
                         <i class="fas fa-film text-cyan-400 text-2xl sm:text-3xl mr-2"></i>
-                        <span class="text-lg sm:text-xl font-bold text-white">Pelis cachondas</span>
+                        <span class="text-lg sm:text-xl font-bold text-white">PelisMod</span>
                     </a>
                 </div>
                 

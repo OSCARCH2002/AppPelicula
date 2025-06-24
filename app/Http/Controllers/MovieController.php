@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\VideoProviderHelper;
 
 class MovieController extends Controller
 {
@@ -170,18 +171,13 @@ class MovieController extends Controller
      */
     public function show($id)
     {
-        $movie = Movie::where('vidapi_id', $id)->first();
+        $movie = Movie::where('vidapi_id', $id)->firstOrFail();
         
-        if (!$movie) {
-            // Buscar en la API y guardar en la base de datos
-            $movie = $this->fetchAndSaveMovie($id);
-        }
+        // Usar el helper para obtener los proveedores
+        $videoProviders = VideoProviderHelper::getProviders($movie->vidapi_id);
+        $defaultProvider = VideoProviderHelper::getDefaultProvider($movie->vidapi_id);
 
-        if (!$movie) {
-            abort(404);
-        }
-
-        return view('movies.show', compact('movie'));
+        return view('movies.show', compact('movie', 'videoProviders', 'defaultProvider'));
     }
 
     /**

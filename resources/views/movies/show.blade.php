@@ -39,14 +39,80 @@
             <!-- Main content: Player and Description -->
             <div class="lg:col-span-8 xl:col-span-9 order-2 lg:order-1">
                 <div class="space-y-4 sm:space-y-6 md:space-y-8">
+                    <!-- Provider Selector -->
+                    <div class="bg-slate-800 p-4 rounded-lg shadow-lg">
+                        <h3 class="text-lg font-semibold text-white mb-3">
+                            <i class="fas fa-globe mr-2 text-cyan-400"></i>Seleccionar Proveedor
+                        </h3>
+                        
+                        <!-- Spanish Providers Section -->
+                        <div class="mb-4">
+                            <h4 class="text-sm font-medium text-green-400 mb-2">
+                                <i class="fas fa-language mr-1"></i>Proveedores en Español
+                            </h4>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                                @foreach($videoProviders as $key => $provider)
+                                    @if($provider['supports_language'])
+                                        <button 
+                                            class="provider-btn bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors border border-slate-600 hover:border-green-500"
+                                            data-provider="{{ $key }}"
+                                            data-url="{{ $provider['url'] }}"
+                                            title="{{ $provider['description'] }}">
+                                            <div class="flex items-center justify-center space-x-1">
+                                                <i class="fas fa-language text-green-400 text-xs"></i>
+                                                <span>{{ $provider['name'] }}</span>
+                                            </div>
+                                        </button>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- Other Providers Section -->
+                        <div>
+                            <h4 class="text-sm font-medium text-yellow-400 mb-2">
+                                <i class="fas fa-film mr-1"></i>Otros Proveedores
+                            </h4>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                                @foreach($videoProviders as $key => $provider)
+                                    @if(!$provider['supports_language'])
+                                        <button 
+                                            class="provider-btn bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors border border-slate-600 hover:border-yellow-500"
+                                            data-provider="{{ $key }}"
+                                            data-url="{{ $provider['url'] }}"
+                                            title="{{ $provider['description'] }}">
+                                            <div class="flex items-center justify-center space-x-1">
+                                                <i class="fas fa-film text-yellow-400 text-xs"></i>
+                                                <span>{{ $provider['name'] }}</span>
+                                            </div>
+                                        </button>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+
                     <!-- Movie Player -->
-                    <div class="bg-black rounded-lg overflow-hidden aspect-video shadow-lg border border-slate-800">
-                        <iframe 
-                            src="https://vidsrc.to/embed/movie/{{ $movie->vidapi_id }}" 
-                            frameborder="0" 
-                            allowfullscreen 
-                            class="w-full h-full">
-                        </iframe>
+                    <div class="bg-black rounded-lg overflow-hidden aspect-video shadow-lg border border-slate-800 relative">
+                        <div id="player-container" class="w-full h-full">
+                            <iframe 
+                                id="movie-player"
+                                src="{{ $defaultProvider['url'] }}" 
+                                frameborder="0" 
+                                allowfullscreen 
+                                class="w-full h-full">
+                            </iframe>
+                        </div>
+                        
+                        <!-- Loading indicator -->
+                        <div id="loading-indicator" class="absolute inset-0 bg-slate-900 flex items-center justify-center hidden">
+                            <div class="text-center">
+                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+                                <p class="text-white text-sm">Cargando reproductor...</p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Description -->
@@ -79,4 +145,66 @@
         </div>
     </div>
 </div>
+
+<script>
+function changeProvider(providerKey, url) {
+    // Show loading indicator
+    document.getElementById('loading-indicator').classList.remove('hidden');
+    
+    // Update active button
+    document.querySelectorAll('.provider-btn').forEach(btn => {
+        btn.classList.remove('bg-cyan-600', 'border-cyan-500', 'bg-green-600', 'border-green-500', 'bg-yellow-600', 'border-yellow-500');
+        btn.classList.add('bg-slate-700', 'border-slate-600');
+    });
+    
+    const activeButton = document.querySelector(`[data-provider="${providerKey}"]`);
+    if (activeButton) {
+        // Determine color based on provider type
+        const isSpanishProvider = activeButton.querySelector('.fa-language') !== null;
+        if (isSpanishProvider) {
+            activeButton.classList.add('bg-green-600', 'border-green-500');
+        } else {
+            activeButton.classList.add('bg-yellow-600', 'border-yellow-500');
+        }
+        activeButton.classList.remove('bg-slate-700', 'border-slate-600');
+    }
+    
+    // Change iframe source
+    const iframe = document.getElementById('movie-player');
+    iframe.src = url;
+    
+    // Hide loading indicator after a short delay
+    setTimeout(() => {
+        document.getElementById('loading-indicator').classList.add('hidden');
+    }, 2000);
+}
+
+// Set initial active provider and add event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listeners to all provider buttons
+    document.querySelectorAll('.provider-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const providerKey = this.getAttribute('data-provider');
+            const url = this.getAttribute('data-url');
+            changeProvider(providerKey, url);
+        });
+    });
+    
+    // Find the default provider (first Spanish provider or first provider)
+    const spanishProviders = document.querySelectorAll('.provider-btn .fa-language');
+    const defaultProvider = spanishProviders.length > 0 
+        ? spanishProviders[0].closest('.provider-btn')
+        : document.querySelector('.provider-btn');
+    
+    if (defaultProvider) {
+        const isSpanishProvider = defaultProvider.querySelector('.fa-language') !== null;
+        if (isSpanishProvider) {
+            defaultProvider.classList.add('bg-green-600', 'border-green-500');
+        } else {
+            defaultProvider.classList.add('bg-yellow-600', 'border-yellow-500');
+        }
+        defaultProvider.classList.remove('bg-slate-700', 'border-slate-600');
+    }
+});
+</script>
 @endsection 

@@ -1,4 +1,4 @@
-# MiAppPelis - Aplicación Web de Películas
+# PelisMod - Aplicación Web de Películas
 
 Una aplicación web moderna para descubrir y explorar películas usando la API de The Movie Database (TMDB).
 
@@ -81,6 +81,7 @@ Una aplicación web moderna para descubrir y explorar películas usando la API d
 - **Populares**: Películas más vistas y comentadas
 - **Mejor Valoradas**: Películas con mejor puntuación
 - **En Cines**: Películas actualmente en cartelera
+-**Generos**: Menú desplegable para buscar por generos
 
 ### Búsqueda
 - Usa la barra de búsqueda en la parte superior
@@ -96,7 +97,7 @@ Una aplicación web moderna para descubrir y explorar películas usando la API d
 - **Backend**: Laravel 12
 - **Frontend**: Blade Templates + Tailwind CSS
 - **API**: The Movie Database (TMDB)
-- **Base de datos**: MySQL/SQLite
+- **Base de datos**: SQLite
 - **Cache**: Laravel Cache
 
 ## 📁 Estructura del proyecto
@@ -126,55 +127,9 @@ peli/
     └── web.php
 ```
 
-## 🔧 Configuración adicional
-
-### Personalizar el diseño
-- Edita los archivos Blade en `resources/views/`
-- Modifica los estilos de Tailwind CSS
-- Añade nuevos iconos de Font Awesome
-
-### Añadir nuevas funcionalidades
-- Crea nuevos métodos en `MovieController.php`
-- Añade nuevas rutas en `routes/web.php`
-- Crea nuevas vistas en `resources/views/movies/`
-
 ## 📊 API Endpoints utilizados
 
 - `GET /search/movie` - Búsqueda de películas
 - `GET /movie/popular` - Películas populares
 - `GET /movie/top_rated` - Películas mejor valoradas
 - `GET /movie/now_playing` - Películas en cines
-- `GET /movie/{id}` - Detalles de una película
-
-## 🤝 Contribuir
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
-## 🆘 Soporte
-
-Si tienes problemas o preguntas:
-- Revisa la documentación de Laravel
-- Consulta la documentación de TMDB API
-- Abre un issue en el repositorio
-
-## 🎯 Próximas características
-
-- [ ] Sistema de usuarios y favoritos
-- [ ] Recomendaciones personalizadas
-- [ ] Trailer de películas
-- [ ] Información de reparto
-- [ ] Filtros avanzados
-- [ ] Modo oscuro/claro
-- [ ] Aplicación móvil
-
----
-
-¡Disfruta explorando películas! 🎬✨
