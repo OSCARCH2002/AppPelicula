@@ -24,9 +24,9 @@ COPY . /var/www/html
 # Cambia el DocumentRoot de Apache a /var/www/html/public
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
-# Da permisos a storage, bootstrap/cache, public y database.sqlite
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
-RUN chown -R www-data:www-data /var/www/html/database/database.sqlite && chmod 664 /var/www/html/database/database.sqlite
+# Da permisos a storage, bootstrap/cache, public y toda la carpeta database
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public /var/www/html/database
+RUN chmod -R 775 /var/www/html/database
 
 # Establece el directorio de trabajo
 WORKDIR /var/www/html
