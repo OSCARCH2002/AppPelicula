@@ -21,8 +21,11 @@ COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 # Copia el código de la app
 COPY . /var/www/html
 
-# Da permisos a storage y bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Cambia el DocumentRoot de Apache a /var/www/html/public
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
+
+# Da permisos a storage, bootstrap/cache y public
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
 
 # Establece el directorio de trabajo
 WORKDIR /var/www/html
